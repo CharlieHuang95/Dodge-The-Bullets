@@ -9,10 +9,6 @@ using namespace cv;
 using namespace std;
 
 // Settings
-float SPEED = 0.04;
-bool DEBUG = false;
-int useImage = 0;
-
 class Point_F {
 public:
 	std::map <char*, Point_F**> rotationDictionary;

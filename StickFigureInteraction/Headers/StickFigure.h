@@ -1,8 +1,8 @@
+#pragma once
 #include <iostream>
 #include <stdio.h>
 #include <list>
-#include <map>
-#include "Geometry.h"
+#include "Header.h"
 
 using namespace cv;
 using namespace std;
@@ -13,25 +13,28 @@ enum StepState { RIGHT, LEFT };
 class StickFigure {
 public:
 	Point_F l_arm, r_arm, l_leg, r_leg, l_hand, r_hand, l_foot, r_foot, head, center, pelvis, ref;
-	Point_F* fixed_point;
+	std::vector<Point_F*> allJoints;
 	SFState currentState = WALK_FORWARD;
 	StepState forwardState = RIGHT;
 	StepState backwardState = RIGHT;
 	float size;
-	Point_F background_size;
-	std::vector<Point_F*> allJoints;
+
 	void Set_Initial(int, Point_F, float);
 	void rotate_point(Point_F*, Point_F*, float, char);
 	void rotate_fixed(Point_F*, float, char);
 	void reset_rotate();
+
 	int l_stepForward();
 	int r_stepForward();
 	int l_stepBackward();
 	int r_stepBackward();
+
 	void assumePosition(int);
 	void walkForward();
 	void walkBackward();
+	void followObject(Point);
 	void FSM(Background);
+
 	void shiftLocation(float, float);
 	void adjustReference(Point_F, Point_F);
 	void adjustAdjacentPoints(Point_F*, Point_F*, float, float);
@@ -133,7 +136,6 @@ void StickFigure::adjustAdjacentPoints(Point_F* fixedPoint, Point_F* p, float x_
 		if (p->linkedJoints[i] == fixedPoint) { continue; }
 		if (p->linkedJoints[i]->adjusted == true) { continue; }
 		adjustAdjacentPoints(fixedPoint, p->linkedJoints[i], x_diff, y_diff);
-		//rotate_fixed(pivot->linkedJoints[i], angle);
 	}
 }
 
@@ -141,7 +143,6 @@ void StickFigure::rotate_fixed(Point_F* pivot, float angle, char c) {
 	for (int i = 0; i < pivot->linkedJoints.size(); i++) {
 		if (pivot->linkedJoints[i]->adjusted == true) { continue; }
 		rotate_point(pivot->linkedJoints[i], pivot, angle, c);
-		//rotate_fixed(pivot->linkedJoints[i], angle);
 	}
 }
 
@@ -163,7 +164,6 @@ int StickFigure::l_stepForward() {
 	reset_rotate();
 	if (pelvis.x <= r_foot.x + size / 2) {
 		rotate_point(&l_hand, &l_arm, SPEED * 6, 'n');
-		//rotate_point(&r_hand, &r_arm, SPEED*6, 'n');
 		rotate_point(&l_arm, &center, SPEED * 6, 'n');
 		rotate_point(&r_arm, &center, SPEED * 6, 'c');
 		rotate_point(&r_leg, &r_foot, SPEED, 'c');
@@ -179,8 +179,6 @@ int StickFigure::r_stepForward() {
 	reset_rotate();
 	if (pelvis.x <= l_foot.x + size / 2) {
 		rotate_point(&l_hand, &l_arm, SPEED * 6, 'c');
-		//rotate_point(&r_hand, &r_arm, SPEED*6, 'c');
-
 		rotate_point(&l_arm, &center, SPEED * 6, 'c');
 		rotate_point(&r_arm, &center, SPEED * 6, 'n');
 		rotate_point(&l_leg, &l_foot, SPEED, 'c');
@@ -196,7 +194,6 @@ int StickFigure::r_stepBackward() {
 	reset_rotate();
 	if (pelvis.x >= l_foot.x - size / 2) {
 		rotate_point(&l_hand, &l_arm, SPEED * 6, 'c');
-
 		rotate_point(&l_arm, &center, SPEED * 6, 'n');
 		rotate_point(&r_arm, &center, SPEED * 6, 'c');
 		rotate_point(&l_leg, &l_foot, SPEED, 'n');
@@ -212,7 +209,6 @@ int StickFigure::l_stepBackward() {
 	reset_rotate();
 	if (pelvis.x >= r_foot.x - size / 2) {
 		rotate_point(&l_hand, &l_arm, SPEED * 6, 'n');
-
 		rotate_point(&l_arm, &center, SPEED * 6, 'c');
 		rotate_point(&r_arm, &center, SPEED * 6, 'n');
 		rotate_point(&r_leg, &r_foot, SPEED, 'n');
@@ -289,6 +285,15 @@ void StickFigure::assumePosition(int position) {
 		r_hand.x = r_arm.x; r_hand.y = r_arm.y + size / 2;
 		ref.x = pelvis.x; ref.y = r_foot.y;
 		break;
+	}
+}
+
+void StickFigure::followObject(Point p) {
+	if (p.x >= ref.x) {
+		currentState = WALK_FORWARD;
+	}
+	else {
+		currentState = WALK_BACKWARD;
 	}
 }
 
