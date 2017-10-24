@@ -7,7 +7,7 @@
 #include <map>
 #include <cstdio>
 #include <ctime>
-#include "ImProcess.h"
+#include "image_processing.h"
 
 
 bool trackObjects = true;
@@ -20,11 +20,11 @@ class Point_F;
 class Line_F;
 class Background;
 
-#include "Rendering.h"
-#include "StickFigure.h"
-#include "Geometry.h"
-#include "ImageProcessing.h"
-#include "Projectile.h"
+#include "rendering.h"
+#include "stick_figure.h"
+#include "geometry.h"
+#include "image_processing.h"
+#include "projectile.h"
 
 // Function Declarations
 void DrawLine(Mat, Point_F, Point_F);

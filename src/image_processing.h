@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <list>
 #include <map>
-using namespace cv;
-using namespace std;
 
 // Define global variables for mouse-click feedback
 int click_x = 0;

@@ -2,10 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <list>
-#include "Header.h"
-
-using namespace cv;
-using namespace std;
+#include "main.h"
 
 enum SFState { WALK_FORWARD, WALK_BACKWARD, REPOSITION_F, REPOSITION_B };
 enum StepState { RIGHT, LEFT };

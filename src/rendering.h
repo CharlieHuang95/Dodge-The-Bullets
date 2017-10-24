@@ -1,4 +1,4 @@
-#include "Geometry.h"
+#include "geometry.h"
 
 #pragma once
 void DrawLine(Mat image, Point_F point1_F, Point_F point2_F) {
