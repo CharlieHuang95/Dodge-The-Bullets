@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <list>
 #include <map>
-using namespace cv;
-using namespace std;
 
 // Settings
 class Point_F {

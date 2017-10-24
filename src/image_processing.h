@@ -92,9 +92,6 @@ void createTrackbars() {
 }
 void drawObject(int x, int y, Mat &frame) {
 
-	//use some of the openCV drawing functions to draw crosshairs
-	//on your tracked image!
-
 	circle(frame, Point(x, y), 20, Scalar(255, 255, 255), 2);
 	/*
 	if (y - 25 > 0)
